@@ -14,7 +14,8 @@ GRAPH = f"https://graph.facebook.com/{os.getenv('META_GRAPH_VERSION', 'v23.0')}"
 
 
 def env(*names: str) -> list[str] | None:
-    vals = [os.getenv(n, "").strip() for n in names]
+    # remove ALL whitespace: values copied from a wrapped terminal line often contain line breaks
+    vals = ["".join(os.getenv(n, "").split()) for n in names]
     return vals if all(vals) else None
 
 
@@ -44,7 +45,7 @@ def linkedin(post, copy, url, media):
     if not cfg:
         return None
     token = cfg[0]
-    author = os.getenv("LINKEDIN_PERSON_URN", "").strip()
+    author = "".join(os.getenv("LINKEDIN_PERSON_URN", "").split())
     if not author:
         me = _ok(requests.get("https://api.linkedin.com/v2/userinfo", headers={"Authorization": f"Bearer {token}"}, timeout=30))
         author = f"urn:li:person:{me['sub']}"
