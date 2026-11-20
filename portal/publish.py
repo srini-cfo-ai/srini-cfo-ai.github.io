@@ -119,7 +119,7 @@ def check():
         if r.status_code == 200:
             me = r.json()
             urn = f"urn:li:person:{me['sub']}"
-            match = urn == ("".join(os.getenv("LINKEDIN_PERSON_URN", "").split()) or urn)
+            match = urn == (social.clean_secret("LINKEDIN_PERSON_URN", os.getenv("LINKEDIN_PERSON_URN", "")) or urn)
             print(f"[ok]   linkedin: token valid for {me.get('name')} (URN matches secret: {match})")
             ok &= match
         else:

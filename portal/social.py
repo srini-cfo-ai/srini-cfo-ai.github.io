@@ -13,9 +13,17 @@ import requests
 GRAPH = f"https://graph.facebook.com/{os.getenv('META_GRAPH_VERSION', 'v23.0')}"
 
 
+def clean_secret(name: str, value: str) -> str:
+    """Forgive common copy/paste slips: line breaks from wrapped terminals and a pasted 'NAME =' label."""
+    v = "".join(value.split())
+    if v.upper().startswith(name.upper() + "="):
+        v = v[len(name) + 1:]
+    return v
+
+
 def env(*names: str) -> list[str] | None:
     # remove ALL whitespace: values copied from a wrapped terminal line often contain line breaks
-    vals = ["".join(os.getenv(n, "").split()) for n in names]
+    vals = [clean_secret(n, os.getenv(n, "")) for n in names]
     return vals if all(vals) else None
 
 
@@ -45,7 +53,7 @@ def linkedin(post, copy, url, media):
     if not cfg:
         return None
     token = cfg[0]
-    author = "".join(os.getenv("LINKEDIN_PERSON_URN", "").split())
+    author = clean_secret("LINKEDIN_PERSON_URN", os.getenv("LINKEDIN_PERSON_URN", ""))
     if not author:
         me = _ok(requests.get("https://api.linkedin.com/v2/userinfo", headers={"Authorization": f"Bearer {token}"}, timeout=30))
         author = f"urn:li:person:{me['sub']}"
