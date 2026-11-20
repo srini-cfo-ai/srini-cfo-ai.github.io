@@ -59,7 +59,20 @@ if "access_token" not in tok:
              "Usually this means the Client Secret was wrong. Copy it again and rerun.")
 me = requests.get("https://api.linkedin.com/v2/userinfo",
                   headers={"Authorization": f"Bearer {tok['access_token']}"}, timeout=30).json()
-print("\nAdd these as GitHub Actions secrets:\n")
-print("LINKEDIN_ACCESS_TOKEN =", tok["access_token"])
-print("LINKEDIN_PERSON_URN   =", f"urn:li:person:{me['sub']}")
-print(f"\nToken expires in {tok.get('expires_in', 0) // 86400} days - rerun this script before then.")
+print(f"\nSigned in as {me.get('name')}. Token valid for {tok.get('expires_in', 0) // 86400} days.")
+
+
+def to_clipboard(value: str):
+    subprocess.run(["powershell", "-NoProfile", "-Command", "$input | Set-Clipboard"], input=value, text=True)
+
+
+GH = "https://github.com/srini-cfo-ai/srini-cfo-ai.github.io/settings/secrets/actions"
+to_clipboard(tok["access_token"])
+input(f"\n1) The ACCESS TOKEN is now on your clipboard.\n   On {GH}\n"
+      "   click the pencil next to LINKEDIN_ACCESS_TOKEN, paste (Ctrl+V) into the value box, click Update secret.\n"
+      "   Then press Enter here...")
+to_clipboard(f"urn:li:person:{me['sub']}")
+input("\n2) The PERSON URN is now on your clipboard.\n"
+      "   Click the pencil next to LINKEDIN_PERSON_URN, paste, click Update secret. Then press Enter here...")
+to_clipboard("")
+print("\nDone. Clipboard cleared. Rerun this script in about 55 days to renew the token.")
