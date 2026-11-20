@@ -15,7 +15,16 @@ import webbrowser
 
 import requests
 
-cid, csec = sys.argv[1], sys.argv[2]
+import subprocess
+
+cid = sys.argv[1] if len(sys.argv) > 1 else input("LinkedIn app Client ID: ").strip()
+if len(sys.argv) > 2:
+    csec = sys.argv[2]
+else:
+    input("Copy the Client Secret (LinkedIn app > Auth > Primary Client Secret > Copy), then press Enter here...")
+    csec = subprocess.run(["powershell", "-NoProfile", "-Command", "Get-Clipboard"],
+                          capture_output=True, text=True).stdout.strip()
+    print(f"Read a {len(csec)}-character secret from the clipboard.")
 redirect = "http://localhost:8765/callback"
 state = secrets.token_urlsafe(16)
 url = "https://www.linkedin.com/oauth/v2/authorization?" + urllib.parse.urlencode({
@@ -37,7 +46,7 @@ class H(http.server.BaseHTTPRequestHandler):
         pass
 
 
-print("Opening LinkedIn sign-in in your browser...")
+print("Opening LinkedIn sign-in in your browser. If nothing opens, open this link:\n" + url)
 webbrowser.open(url)
 srv = http.server.HTTPServer(("localhost", 8765), H)
 while "v" not in code:
@@ -45,6 +54,9 @@ while "v" not in code:
 tok = requests.post("https://www.linkedin.com/oauth/v2/accessToken", data={
     "grant_type": "authorization_code", "code": code["v"], "redirect_uri": redirect,
     "client_id": cid, "client_secret": csec}, timeout=30).json()
+if "access_token" not in tok:
+    sys.exit(f"\nLinkedIn refused the token exchange: {tok.get('error')}: {tok.get('error_description')}\n"
+             "Usually this means the Client Secret was wrong. Copy it again and rerun.")
 me = requests.get("https://api.linkedin.com/v2/userinfo",
                   headers={"Authorization": f"Bearer {tok['access_token']}"}, timeout=30).json()
 print("\nAdd these as GitHub Actions secrets:\n")

@@ -110,6 +110,31 @@ def post_all():
         print(f"{failures} platform post(s) failed; they will be retried on the next run (max {MAX_ATTEMPTS}).")
 
 
+def check():
+    """Verify each configured platform's credentials WITHOUT posting anything."""
+    ok = True
+    if social.env("LINKEDIN_ACCESS_TOKEN"):
+        r = requests.get("https://api.linkedin.com/v2/userinfo", timeout=30,
+                         headers={"Authorization": f"Bearer {os.environ['LINKEDIN_ACCESS_TOKEN']}"})
+        if r.status_code == 200:
+            me = r.json()
+            urn = f"urn:li:person:{me['sub']}"
+            match = urn == os.getenv("LINKEDIN_PERSON_URN", urn)
+            print(f"[ok]   linkedin: token valid for {me.get('name')} (URN matches secret: {match})")
+            ok &= match
+        else:
+            print(f"[fail] linkedin: {r.status_code} {r.text[:200]}")
+            ok = False
+    else:
+        print("[skip] linkedin: not configured")
+    for name, keys in {"youtube": ["YT_REFRESH_TOKEN"], "x": ["X_API_KEY"], "facebook": ["FB_PAGE_TOKEN"],
+                       "instagram": ["IG_ACCESS_TOKEN"], "threads": ["THREADS_ACCESS_TOKEN"],
+                       "bluesky": ["BLUESKY_APP_PASSWORD"]}.items():
+        print(f"[{'set ' if social.env(*keys) else 'skip'}] {name}: {'configured' if social.env(*keys) else 'not configured'}")
+    if not ok:
+        sys.exit(1)
+
+
 def status():
     state = load_state()
     for slug, rec in state["posts"].items():
@@ -122,4 +147,4 @@ def status():
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "status"
-    {"prepare": prepare, "post": post_all, "status": status}[cmd]()
+    {"prepare": prepare, "post": post_all, "status": status, "check": check}[cmd]()
