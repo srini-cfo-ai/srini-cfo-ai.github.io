@@ -25,6 +25,11 @@ else:
     csec = subprocess.run(["powershell", "-NoProfile", "-Command", "Get-Clipboard"],
                           capture_output=True, text=True).stdout.strip()
     print(f"Read a {len(csec)}-character secret from the clipboard.")
+    if len(csec) < 10:
+        csec = "".join(input("Clipboard was empty. Paste the Client Secret here (right-click) and press Enter: ").split())
+        print(f"Got a {len(csec)}-character secret.")
+    if len(csec) < 10:
+        sys.exit("No Client Secret received - nothing done. Copy it from Chrome and rerun.")
 redirect = "http://localhost:8765/callback"
 state = secrets.token_urlsafe(16)
 url = "https://www.linkedin.com/oauth/v2/authorization?" + urllib.parse.urlencode({
