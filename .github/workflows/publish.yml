@@ -1,4 +1,4 @@
-name: Build site, make videos & cross-post
+﻿name: Build site, make videos & cross-post
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
         description: "Re-run for a single post slug (optional)"
         required: false
       dry_run:
-        description: "Dry run — do not post to social media"
+        description: "Dry run â€” do not post to social media"
         type: boolean
         default: false
   schedule:
@@ -59,7 +59,7 @@ jobs:
         run: |
           git config user.name "portal-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add media content/social state
+          git add -A
           git diff --cached --quiet || (git commit -m "chore: generated videos & social copy [skip ci]" && git push)
       - name: Build site
         run: |
@@ -119,5 +119,5 @@ jobs:
         run: |
           git config user.name "portal-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add state content/social
+          git add -A
           git diff --cached --quiet || (git commit -m "chore: social posting log [skip ci]" && git pull --rebase && git push)
