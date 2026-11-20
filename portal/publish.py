@@ -115,11 +115,11 @@ def check():
     ok = True
     if social.env("LINKEDIN_ACCESS_TOKEN"):
         r = requests.get("https://api.linkedin.com/v2/userinfo", timeout=30,
-                         headers={"Authorization": f"Bearer {os.environ['LINKEDIN_ACCESS_TOKEN']}"})
+                         headers={"Authorization": f"Bearer {social.env('LINKEDIN_ACCESS_TOKEN')[0]}"})
         if r.status_code == 200:
             me = r.json()
             urn = f"urn:li:person:{me['sub']}"
-            match = urn == os.getenv("LINKEDIN_PERSON_URN", urn)
+            match = urn == (os.getenv("LINKEDIN_PERSON_URN", "").strip() or urn)
             print(f"[ok]   linkedin: token valid for {me.get('name')} (URN matches secret: {match})")
             ok &= match
         else:

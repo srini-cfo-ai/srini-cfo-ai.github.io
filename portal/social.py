@@ -44,7 +44,7 @@ def linkedin(post, copy, url, media):
     if not cfg:
         return None
     token = cfg[0]
-    author = os.getenv("LINKEDIN_PERSON_URN")
+    author = os.getenv("LINKEDIN_PERSON_URN", "").strip()
     if not author:
         me = _ok(requests.get("https://api.linkedin.com/v2/userinfo", headers={"Authorization": f"Bearer {token}"}, timeout=30))
         author = f"urn:li:person:{me['sub']}"
