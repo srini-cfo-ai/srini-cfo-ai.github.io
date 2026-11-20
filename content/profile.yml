@@ -1,0 +1,82 @@
+# ---------------------------------------------------------------------------
+# YOUR PROFILE — the whole home page is generated from this file.
+# Lines marked TODO-CV are placeholders until the CV is loaded.
+# Leave a value empty ("") to hide it on the site.
+# ---------------------------------------------------------------------------
+name: Srinivasa Reddy Kareti
+display_name: CA Srinivasa Reddy Kareti
+short_name: CA Srinivasa
+initials: SK
+headline: AI CFO · Finance Transformation Leader · AI Analyst
+tagline: >-
+  I turn finance from a reporting function into an intelligence function —
+  automated closes, AI-assisted FP&A and board packs that build themselves.
+location: ""            # TODO-CV e.g. "London, UK"
+email: ""               # public contact email (optional)
+site_url: ""            # filled automatically by the workflow; or set e.g. https://casrinivasa.com
+cv_file: ""             # e.g. "cv.pdf" — put the PDF in portal/static/ to offer a download
+
+# Short numbers shown under the hero. TODO-CV: replace with real figures.
+stats:
+  - value: "15+"
+    label: "Years in finance"            # TODO-CV
+  - value: "10+"
+    label: "Entities reported monthly"   # TODO-CV
+  - value: "4"
+    label: "Countries"                   # TODO-CV
+  - value: "Days → hours"
+    label: "Month-end close with AI"
+
+about: |
+  I am a Chartered Accountant who builds finance functions that run on data and AI.
+  My work sits where the CFO's agenda meets modern tooling: multi-entity MIS and
+  board reporting, rolling forecasts, cash and treasury visibility, and the
+  automation that removes manual spreadsheet effort from every one of them.
+
+  I write here about practical AI for finance leaders — what works, what does not,
+  and how to get from a 10-day close to a same-week board pack without losing control.
+
+expertise:
+  - title: AI-enabled close & MIS
+    text: Automated month-end packs, built-in tie-out controls and exception-first review, so analysts review instead of rebuild.
+  - title: Board reporting & FP&A
+    text: Board decks, variance commentary, unit-cost and AISC analysis, budget vs actual and rolling forecasts that leadership actually reads.
+  - title: Finance transformation
+    text: Target operating models, ERP-to-insight data flows and the change management that makes automation stick.
+  - title: Group reporting & consolidation
+    text: Multi-entity, multi-currency reporting across manufacturing, mining and FMCG businesses.
+  - title: Cash & treasury forecasting
+    text: Group cash forecasts, funding requirements and FX-aware reporting for shareholders and lenders.
+  - title: Finance data & AI engineering
+    text: SQL, Python, .NET and LLM agents applied to ledgers, trial balances and ERP exports — with controls auditors trust.
+
+# TODO-CV: replace with your real roles (most recent first).
+experience:
+  - role: "Group Finance — MIS, FP&A & Transformation"
+    org: "TODO-CV Company"
+    period: "TODO-CV"
+    points:
+      - "TODO-CV: key achievement with a number"
+      - "TODO-CV: key achievement with a number"
+
+education:
+  - title: "Chartered Accountant (CA)"
+    org: "The Institute of Chartered Accountants of India"   # TODO-CV confirm
+    year: ""
+
+# Social profiles. Paste full URLs; empty ones are hidden.
+social:
+  linkedin: ""
+  x: ""
+  youtube: ""
+  instagram: ""
+  facebook: ""
+  threads: ""
+  bluesky: ""
+  github: ""
+
+# Voice guide used by the AI writer and video narrator.
+voice: >-
+  Practical, confident, plain UK English. Written by a Chartered Accountant for
+  CFOs, finance directors and FP&A leads. Concrete examples over buzzwords.
+  Never invent statistics, client names or results.

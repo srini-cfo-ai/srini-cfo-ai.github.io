@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ p.display_name }} — {{ p.headline }}{% endblock %}</title>
+<meta name="description" content="{% block description %}{{ p.tagline | trim }}{% endblock %}">
+<meta name="author" content="{{ p.name }}">
+<meta property="og:site_name" content="{{ p.display_name }}">
+<meta property="og:title" content="{{ self.title() }}">
+<meta property="og:description" content="{{ self.description() }}">
+<meta property="og:type" content="{% block ogtype %}website{% endblock %}">
+{% if site_url %}<meta property="og:url" content="{{ site_url }}/{{ page_path }}">{% endif %}
+<meta property="og:image" content="{{ site_url }}/{% block ogimage %}og/home.png{% endblock %}">
+<meta name="twitter:card" content="summary_large_image">
+{% if site_url %}<link rel="canonical" href="{{ site_url }}/{{ page_path }}">{% endif %}
+<link rel="alternate" type="application/rss+xml" title="{{ p.display_name }} — Insights" href="{{ root }}feed.xml">
+<link rel="icon" href="{{ root }}favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ root }}style.css?v={{ build_id }}">
+{% block head %}{% endblock %}
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="{{ root }}"><span class="mark">{{ p.initials }}</span><span>{{ p.display_name }}</span></a>
+    <nav>
+      <a href="{{ root }}#about">About</a>
+      <a href="{{ root }}#expertise">Expertise</a>
+      <a href="{{ root }}#experience">Experience</a>
+      <a href="{{ root }}blog/">Insights</a>
+      <a class="btn-sm" href="{{ root }}#contact">Connect</a>
+    </nav>
+  </div>
+</header>
+<main>{% block main %}{% endblock %}</main>
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <div>
+      <strong>{{ p.display_name }}</strong><br>
+      <span class="muted">{{ p.headline }}</span>
+    </div>
+    <div class="socials">
+      {% for key, label in social_labels %}{% if p.social.get(key) %}<a href="{{ p.social[key] }}" rel="me noopener" target="_blank">{{ label }}</a>{% endif %}{% endfor %}
+      <a href="{{ root }}feed.xml">RSS</a>
+    </div>
+  </div>
+  <div class="wrap muted small">© {{ year }} {{ p.name }}. Views are my own. Some videos use AI-generated narration.</div>
+</footer>
+</body>
+</html>

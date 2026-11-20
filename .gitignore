@@ -1,0 +1,6 @@
+.venv/
+_site/
+.cache/
+__pycache__/
+tools/client_secret.json
+*.pyc

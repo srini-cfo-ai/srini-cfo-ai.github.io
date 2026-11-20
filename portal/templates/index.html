@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block main %}
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">{{ p.headline }}</p>
+      <h1>Finance that thinks<span class="gold">.</span></h1>
+      <p class="lead">{{ p.tagline | trim }}</p>
+      <div class="cta-row">
+        <a class="btn" href="{{ root }}blog/">Read my insights</a>
+        <a class="btn ghost" href="#contact">Work with me</a>
+        {% if p.cv_file %}<a class="btn ghost" href="{{ root }}{{ p.cv_file }}">Download CV</a>{% endif %}
+      </div>
+      {% if p.location %}<p class="muted small">{{ p.location }}</p>{% endif %}
+    </div>
+    <div class="hero-card">
+      <div class="avatar">{% if has_photo %}<img src="{{ root }}photo.jpg" alt="{{ p.name }}">{% else %}{{ p.initials }}{% endif %}</div>
+      <div class="hero-name">{{ p.display_name }}</div>
+      <div class="muted small">Chartered Accountant</div>
+      <ul class="pill-list">
+        <li>AI CFO</li><li>Finance Transformation</li><li>AI Analyst</li>
+      </ul>
+    </div>
+  </div>
+  {% if p.stats %}
+  <div class="wrap stats">
+    {% for s in p.stats %}<div class="stat"><div class="stat-v">{{ s.value }}</div><div class="stat-l">{{ s.label }}</div></div>{% endfor %}
+  </div>
+  {% endif %}
+</section>
+
+<section id="about" class="section">
+  <div class="wrap narrow">
+    <h2>About</h2>
+    {% for para in p.about.strip().split('\n\n') %}<p>{{ para }}</p>{% endfor %}
+  </div>
+</section>
+
+<section id="expertise" class="section alt">
+  <div class="wrap">
+    <h2>What I bring to the CFO agenda</h2>
+    <div class="cards">
+      {% for e in p.expertise %}
+      <article class="card"><div class="num">{{ '%02d' % loop.index }}</div><h3>{{ e.title }}</h3><p>{{ e.text }}</p></article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="experience" class="section">
+  <div class="wrap narrow">
+    <h2>Experience</h2>
+    <ol class="timeline">
+      {% for x in p.experience %}
+      <li>
+        <div class="tl-head"><strong>{{ x.role }}</strong><span class="muted">{{ x.period }}</span></div>
+        <div class="muted">{{ x.org }}</div>
+        {% if x.points %}<ul>{% for pt in x.points %}<li>{{ pt }}</li>{% endfor %}</ul>{% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+    {% if p.education %}
+    <h3 class="sub">Qualifications</h3>
+    <ul class="quals">{% for e in p.education %}<li><strong>{{ e.title }}</strong> — {{ e.org }}{% if e.year %} ({{ e.year }}){% endif %}</li>{% endfor %}</ul>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap">
+    <div class="row-between"><h2>Latest insights</h2><a href="{{ root }}blog/">All posts →</a></div>
+    <div class="cards posts">
+      {% for post in posts[:3] %}{% include "_postcard.html" %}{% else %}<p class="muted">First post coming soon.</p>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="section">
+  <div class="wrap narrow center">
+    <h2>Let's talk finance &amp; AI</h2>
+    <p class="lead">CFO advisory, finance transformation, AI adoption in finance, speaking and board roles.</p>
+    <div class="socials big">
+      {% for key, label in social_labels %}{% if p.social.get(key) %}<a href="{{ p.social[key] }}" rel="me noopener" target="_blank">{{ label }}</a>{% endif %}{% endfor %}
+      {% if p.email %}<a href="mailto:{{ p.email }}">Email</a>{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

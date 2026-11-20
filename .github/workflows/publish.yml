@@ -1,0 +1,121 @@
+name: Build site, make videos & cross-post
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Re-run for a single post slug (optional)"
+        required: false
+      dry_run:
+        description: "Dry run — do not post to social media"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "15 6 * * *"   # daily: publishes future-dated (scheduled) posts and retries failures
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  models: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+env:
+  SITE_URL: ${{ vars.SITE_URL }}
+  ONLY: ${{ inputs.only }}
+  PIPER_VOICE: ${{ vars.PIPER_VOICE || 'en_GB-alan-medium' }}
+  LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+  LLM_MODEL: ${{ vars.LLM_MODEL }}
+  LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+  GITHUB_TOKEN: ${{ github.token }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - name: System packages (ffmpeg, fonts, fallback TTS)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg espeak-ng fonts-dejavu-core fonts-roboto >/dev/null
+      - run: pip install -r requirements.txt piper-tts
+      - uses: actions/cache@v4
+        with: { path: .cache/piper, key: piper-${{ env.PIPER_VOICE }} }
+      - name: Work out the site URL
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: AI copy + narrated videos for new posts
+        run: |
+          export SITE_URL="${SITE_URL:-${{ steps.pages.outputs.base_url }}}"
+          python -m portal.publish prepare
+      - name: Save generated assets to the repo
+        run: |
+          git config user.name "portal-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add media content/social state
+          git diff --cached --quiet || (git commit -m "chore: generated videos & social copy [skip ci]" && git push)
+      - name: Build site
+        run: |
+          export SITE_URL="${SITE_URL:-${{ steps.pages.outputs.base_url }}}"
+          python -m portal.build
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+    outputs:
+      base_url: ${{ steps.pages.outputs.base_url }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  crosspost:
+    needs: [build, deploy]
+    if: ${{ !inputs.dry_run }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - name: Post to every configured platform
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_PRIVACY: ${{ vars.YT_PRIVACY || 'public' }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
+          THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+        run: |
+          export SITE_URL="${SITE_URL:-${{ needs.build.outputs.base_url }}}"
+          python -m portal.publish post
+          python -m portal.publish status
+      - name: Record what was posted
+        if: always()
+        run: |
+          git config user.name "portal-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state content/social
+          git diff --cached --quiet || (git commit -m "chore: social posting log [skip ci]" && git pull --rebase && git push)

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Insights — {{ p.display_name }}{% endblock %}
+{% block description %}Practical writing on AI for CFOs, finance transformation and FP&A by {{ p.display_name }}.{% endblock %}
+{% block main %}
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">Insights</p>
+    <h1 class="page-h">AI, finance transformation &amp; the modern CFO</h1>
+    <p class="lead">Every post here is also published as a video on YouTube, Shorts, Instagram and Facebook, and shared on LinkedIn and X.</p>
+    <div class="cards posts">
+      {% for post in posts %}{% include "_postcard.html" %}{% else %}<p class="muted">First post coming soon.</p>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

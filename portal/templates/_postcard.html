@@ -1,0 +1,6 @@
+<a class="card post-card" href="{{ root }}{{ post.url_path }}">
+  <img src="{{ root }}og/{{ post.slug }}.png" alt="" loading="lazy">
+  <div class="meta">{{ post.date.strftime('%d %b %Y') }} · {{ post.reading_minutes }} min read</div>
+  <h3>{{ post.title }}</h3>
+  <p>{{ post.summary }}</p>
+</a>

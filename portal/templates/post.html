@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} — {{ p.display_name }}{% endblock %}
+{% block description %}{{ post.summary }}{% endblock %}
+{% block ogtype %}article{% endblock %}
+{% block ogimage %}og/{{ post.slug }}.png{% endblock %}
+{% block main %}
+<article class="section">
+  <div class="wrap narrow">
+    <a class="muted small" href="{{ root }}blog/">← All insights</a>
+    <h1 class="post-h">{{ post.title }}</h1>
+    <div class="meta">{{ post.date.strftime('%d %B %Y') }} · {{ post.reading_minutes }} min read{% for t in post.tags %} · <span class="tag">{{ t }}</span>{% endfor %}</div>
+    {% if youtube_id %}
+    <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/{{ youtube_id }}" title="{{ post.title }}" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+    {% elif has_video %}
+    <video class="video-el" controls preload="metadata" poster="{{ root }}og/{{ post.slug }}.png" src="{{ root }}media/{{ post.slug }}/long.mp4"></video>
+    {% endif %}
+    <div class="prose">{{ post.html | safe }}</div>
+    <div class="share">
+      <span class="muted">Share:</span>
+      <a target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url={{ abs_url | urlencode }}">LinkedIn</a>
+      <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url={{ abs_url | urlencode }}&text={{ post.title | urlencode }}">X</a>
+      <a target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u={{ abs_url | urlencode }}">Facebook</a>
+      <a target="_blank" rel="noopener" href="https://wa.me/?text={{ (post.title ~ ' ' ~ abs_url) | urlencode }}">WhatsApp</a>
+    </div>
+    <div class="author-box">
+      <div class="avatar sm">{{ p.initials }}</div>
+      <div><strong>{{ p.display_name }}</strong><br><span class="muted">{{ p.headline }}</span></div>
+    </div>
+  </div>
+</article>
+{% endblock %}

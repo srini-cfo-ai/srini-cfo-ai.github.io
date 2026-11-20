@@ -1,0 +1,18 @@
+# The AI writer works down this list, one topic per scheduled run. Add, remove or reorder freely.
+topics:
+  - "What an AI CFO actually does day to day — and what stays human"
+  - "Automating the month-end close: controls first, speed second"
+  - "Using LLMs to draft variance commentary without losing accuracy"
+  - "Board packs that build themselves: from trial balance to slides"
+  - "Rolling forecasts with AI: driver-based models for volatile markets"
+  - "Group cash forecasting across currencies: a practical playbook"
+  - "Finance data foundations: why your ERP export is your first AI project"
+  - "Unit-cost and AISC analysis for mining finance teams"
+  - "How to run AI and manual reporting in parallel before you switch"
+  - "The finance transformation roadmap for a mid-sized group"
+  - "AI governance for finance: auditability, controls and model risk"
+  - "Hiring and upskilling the AI-ready finance team"
+  - "FP&A in emerging markets: FX, inflation and reporting in USD"
+  - "Five finance processes to automate first — and two to leave alone"
+  - "From spreadsheets to SQL: a CFO's guide to the finance data stack"
+  - "Measuring the ROI of AI in finance honestly"
