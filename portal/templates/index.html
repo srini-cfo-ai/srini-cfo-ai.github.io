@@ -11,12 +11,12 @@
         <a class="btn ghost" href="#contact">Work with me</a>
         {% if p.cv_file %}<a class="btn ghost" href="{{ root }}{{ p.cv_file }}">Download CV</a>{% endif %}
       </div>
-      {% if p.location %}<p class="muted small">{{ p.location }}</p>{% endif %}
     </div>
     <div class="hero-card">
       <div class="avatar">{% if has_photo %}<img src="{{ root }}photo.jpg" alt="{{ p.name }}">{% else %}{{ p.initials }}{% endif %}</div>
       <div class="hero-name">{{ p.display_name }}</div>
-      <div class="muted small">Chartered Accountant</div>
+      <div class="muted small">Chartered Accountant · ICAEW &amp; ICAI</div>
+      {% if p.location %}<div class="muted small">{{ p.location }}</div>{% endif %}
       <ul class="pill-list">
         <li>AI CFO</li><li>Finance Transformation</li><li>AI Analyst</li>
       </ul>
