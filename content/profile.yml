@@ -14,7 +14,7 @@ tagline: >-
   that build themselves.
 location: "Cambridge, United Kingdom"
 email: ""               # public contact email (optional)
-site_url: ""            # filled automatically by the workflow; or set e.g. https://casrinivasa.com
+site_url: "https://srini-cfo-ai.github.io"   # change if you add a custom domain
 cv_file: ""             # e.g. "cv.pdf" — put the PDF in portal/static/ to offer a download
 
 stats:
